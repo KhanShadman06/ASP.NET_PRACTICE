@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Db_SmartFarmModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Equipment">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="SellerID" Type="Int32" Nullable="false" />
+    <Property Name="Price" Type="Int32" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Quantity" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Equipment1" Relationship="Self.FK_Equipment_Equipment" FromRole="Equipment" ToRole="Equipment1" />
+    <NavigationProperty Name="Equipment2" Relationship="Self.FK_Equipment_Equipment" FromRole="Equipment1" ToRole="Equipment" />
+    <NavigationProperty Name="Farmer" Relationship="Self.FK_Equipment_Farmer" FromRole="Equipment" ToRole="Farmer" />
+  </EntityType>
+  <EntityType Name="Farmer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Equipments" Relationship="Self.FK_Equipment_Farmer" FromRole="Farmer" ToRole="Equipment" />
+    <NavigationProperty Name="Loans" Relationship="Self.FK_Loan_Farmer" FromRole="Farmer" ToRole="Loan" />
+  </EntityType>
+  <EntityType Name="Loan">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Amount" Type="Int32" Nullable="false" />
+    <Property Name="FarmerId" Type="Int32" Nullable="false" />
+    <Property Name="BorrowDate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="TodDate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Farmer" Relationship="Self.FK_Loan_Farmer" FromRole="Loan" ToRole="Farmer" />
+  </EntityType>
+  <Association Name="FK_Equipment_Equipment">
+    <End Role="Equipment" Type="Self.Equipment" Multiplicity="1" />
+    <End Role="Equipment1" Type="Self.Equipment" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Equipment">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Equipment1">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Equipment_Farmer">
+    <End Role="Farmer" Type="Self.Farmer" Multiplicity="1" />
+    <End Role="Equipment" Type="Self.Equipment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Farmer">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Equipment">
+        <PropertyRef Name="SellerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Loan_Farmer">
+    <End Role="Farmer" Type="Self.Farmer" Multiplicity="1" />
+    <End Role="Loan" Type="Self.Loan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Farmer">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Loan">
+        <PropertyRef Name="FarmerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Db_SmartFarmEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Equipments" EntityType="Self.Equipment" />
+    <EntitySet Name="Farmers" EntityType="Self.Farmer" />
+    <EntitySet Name="Loans" EntityType="Self.Loan" />
+    <AssociationSet Name="FK_Equipment_Equipment" Association="Self.FK_Equipment_Equipment">
+      <End Role="Equipment" EntitySet="Equipments" />
+      <End Role="Equipment1" EntitySet="Equipments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Equipment_Farmer" Association="Self.FK_Equipment_Farmer">
+      <End Role="Farmer" EntitySet="Farmers" />
+      <End Role="Equipment" EntitySet="Equipments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Loan_Farmer" Association="Self.FK_Loan_Farmer">
+      <End Role="Farmer" EntitySet="Farmers" />
+      <End Role="Loan" EntitySet="Loans" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

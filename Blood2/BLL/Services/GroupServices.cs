@@ -70,9 +70,15 @@ namespace BLL.Services
             return mapper.Map<GroupDTO>(group);
         }
 
-        public static object Get()
+        public static List<GroupDTO> Get()
         {
-            throw new NotImplementedException();
+            var data = DataAccessFactory.GroupDataAccess().Get();
+
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Group, GroupDTO>());
+            var mapper = new Mapper(config);
+            var groups = mapper.Map<List<GroupDTO>>(data);
+            return groups;
+
         }
     }
 }
